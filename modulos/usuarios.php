@@ -6,6 +6,17 @@ loadJS('jquery-validate-messages');
 
 switch($tela):
 case 'login':
+    if(isset($_POST['logar'])):
+        $user = new usuarios();
+        $user->setValor('login', $_POST['usuario']);
+        $user->setValor('senha', $_POST['senha']);
+        if($user->doLogin($user)):
+            redireciona('painel.php');
+        else:
+            redireciona('?erro=2');
+        endif;
+    
+    endif;
     ?>
        
         <script type="text/javascript">

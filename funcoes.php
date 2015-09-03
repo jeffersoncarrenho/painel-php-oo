@@ -1,6 +1,7 @@
 <?php
 inicializa();
 protegeArquivo(basename(__FILE__));
+
 function inicializa(){
     if(file_exists(dirname(__FILE__).'/config.php')):
         require_once(dirname(__FILE__).'/config.php');
@@ -13,8 +14,17 @@ function inicializa(){
             die(utf8_decode('Faltam configurações básicas do sistema, contate o administrador.'));
         endif;           
     endforeach;
-           
     require_once(BASEPATH.CLASSESPATH.'autoload.php');
+    
+    if(isset($_GET['logoff'])):
+        if($_GET['logoff'] == true):
+            //faz o logoff do sistema
+            $user = new usuarios();
+            $user->doLogout();
+            exit;
+        endif;
+    endif;
+           
 }//inicializa()
 
 function loadCSS($arquivo=null, $media='screen', $import=false){
@@ -60,5 +70,9 @@ function protegeArquivo($nomeArquivo, $redirPara='index.php?erro=3'){
 function redireciona($url=''){
     header("Location: ". BASEURL.$url);
 }//redireciona()
+
+function codificaSenha($senha){
+    return md5($senha);
+}//codificaSenha()
 
 ?>

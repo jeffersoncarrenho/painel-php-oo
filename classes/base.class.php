@@ -1,5 +1,6 @@
 <?php
-require_once("banco.class.php");
+require_once(dirname(__FILE__).'/autoload.php');
+protegeArquivo(basename(__FILE__));
 
 abstract class Base extends Banco{
     //propriedades

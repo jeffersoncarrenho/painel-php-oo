@@ -1,11 +1,12 @@
 <?php
-
+require_once(dirname(__FILE__).'/autoload.php');
+protegeArquivo(basename(__FILE__));
 abstract class Banco{
     //propriedades
-    public $servidor        ="localhost";
-    public $usuario         ="root";
-    public $senha           ="";
-    public $nomebanco       ="crudgenerico";
+    public $servidor        =DBHOST;
+    public $usuario         =DBUSER;
+    public $senha           =DBPASS;
+    public $nomebanco       =DBNAME;
     public $conexao         =NULL;
     public $dataset         =NULL;
     public $linhasafetadas  =1;
