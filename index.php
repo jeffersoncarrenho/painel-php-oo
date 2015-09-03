@@ -14,6 +14,8 @@
     ?>
 </head>
 <body>
-    
+    <?php
+        loadModulo('usuarios', 'login');
+    ?>
 </body>
 </html>
