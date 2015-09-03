@@ -71,3 +71,67 @@ form input[type=text]:focus, form input[type=password]::focus, form input[type=t
     -o-border-radius: 5px;
     -ms-border-radius: 5px;
 }
+
+.erro, .sucesso, .alerta, .pergunta{
+    width: 96%;
+    padding: 2%;
+    margin: 10px 0;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -o-border-radius: 5px;
+    -ms-border-radius: 5px;
+}
+
+.sucesso{
+    background: #eff4d4;
+    border: solid 1px #8fad3d;
+    color: #596c26;
+}
+
+.alerta{
+    background: #ffea97;
+    border: solid 1 px #e2b500;
+    color: #995f5b;
+}
+
+.erro{
+    background: #efcec9;
+    border: solid 1 px #ad3f30;
+    color: #943728;
+}
+
+.pergunta{
+    background: #c6d8f0;
+    border: solid 1 px #4381cc;
+    color: #5c58b9;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
