@@ -1,3 +1,89 @@
+body.painel{
+    font-size: 14px!important;
+    font-family: Georgia, "times New Roman", Times, serif !important;
+    color: #333;
+    background: #f8f8f8 !important;
+}
+
+a:link, a:active, a:visited{
+    text-decoration:none;
+    color: #09f;    
+}
+
+a:hover{
+    text-decoration: underline;
+}
+
+#wrapper{
+    width: 980px;
+    margin: 0 auto;
+    background: #fff;
+}
+
+#header{
+    height: 100px;
+    border-bottom: 2px solid #999;
+    padding: 10px;
+}
+
+#header h1{
+    font-size: 30px;
+    margin-top: 30px;
+}
+
+#wrap-content{
+    display: table;
+    height: auto;
+    padding: 10px;    
+}
+
+#content{
+    float: right;
+    width: 795;
+    padding-left: 15px;
+}
+
+#content h2{
+    font-size: 20px;
+    border-bottom: 1px solid #999;
+    margin-bottom: 10px;
+}
+
+#sidebar{
+    float: left;
+    width: 150px;
+}
+
+#sidebar ul li{
+    padding: 2% 5%;
+    width: 90%;
+    background: #f8f8f8;
+    margin-bottom: 1px;
+    font-size: 16px;
+    display: block;
+}
+
+#accordion ul{
+    display: none;
+    margin: 5p 10px;
+}
+
+#accordion ul li{
+    padding: 2px;
+    width: 96%;
+    background: #fff;
+    margin-bottom: 2px;
+    display: block;
+    font-size: 14px;
+}
+
+#footer{
+    height: 20px;
+    border-top: 2px solid #999;
+    padding: 20px 10px;
+    text-align: center;
+}
+
 #loginform{
     width: 400px;
     margin: 100px auto;
