@@ -5,7 +5,7 @@ protegeArquivo(basename(__FILE__));
 
             </div><!-- wrap-content -->
         <div id="footer">
-            <p>painel de administração | Desenvolvido por RBTech.info </p>
+            <p>Painel de administração | Desenvolvido por RBTech.info </p>
         </div><!-- footer -->
     </div><!-- wrapper -->
 </body>

@@ -10,8 +10,8 @@ $sessao = new sessao();
     <meta charset="UTF-8">
     <title>Painel Administrativo</title>
     <?php
-        loadCSS('style');
         loadCSS('reset');
+        loadCSS('style');
         loadJS('jquery');  
         loadJS('geral');  
     ?>

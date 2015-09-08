@@ -116,7 +116,7 @@ abstract class Banco{
                 $this->dataset=$query;
                 return $query;
             else:
-                return $this-linhasafetadas;
+                return $this->linhasafetadas;
             endif;
         else:
             $this->trataerro(__FILE__, __FUNCTION__, NULL, ' Comando SQL nao informado na rotina', FALSE);
