@@ -82,12 +82,24 @@ case 'incluir':
                                     'email' => $_POST['email'],
                                     'login' => $_POST['login'],
                                     'senha' => codificaSenha($_POST['senha']),
-                                    'administrador' => ($_POST['adm']=='on')?'s': 'n' ,
+                                    'administrador' => ($_POST['adm']=='on')?'s': 'n',
         ));
-        $user->inserir($user);
-        if($user->linhasafetadas == 1):
-            echo 'Dados Inseridos com sucesso';
-            unset($_POST);
+        
+        if($user->existeRegistro('login', $_POST['login'])):
+            printMSG('Este login já está cadastrado. Escolha outro nome de usuário', 'erro');
+            $duplicado = true;
+        endif;
+        if($user->existeRegistro('email', $_POST['email'])):
+            printMSG('Este email já está cadastrado. Escolha outro endereço', 'erro');
+            $duplicado = true;
+        endif;
+        
+        if($duplicado!=true):
+            $user->inserir($user);
+            if($user->linhasafetadas == 1):
+                printMSG('Dados Inseridos com sucesso. <a href="'.ADMURL.'?m=usuarios&t=listar">Exibir Cadastros</a>');
+                unset($_POST);
+            endif;        
         endif;
     endif;
     ?>
@@ -132,7 +144,7 @@ case 'incluir':
                     </li>
                     <li>
                         <label for="adm">Administrador</label>
-                        <input type="checkbox" name="adm" /> Dar controle total ao usuário
+                        <input type="checkbox" name="adm" <?php if(!isAdmin()) echo 'disabled="dissabled"'; if(isset($_POST['adm'])) echo 'checked="checked"'; ?> /> Dar controle total ao usuário
                     </li>
                     <li class="center">
                         <input type="button" onClick="location.href='?m=usuarios&t=listar'" value="Cancelar" />

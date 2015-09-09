@@ -82,4 +82,42 @@ function verificaLogin(){
     endif;
 }//verificaLogin()
 
+function printMSG($msg=null, $tipo=null){
+    if($msg!=null):
+        switch($tipo):
+            case 'erro':
+                echo '<div class="erro">'. $msg .'</div>';
+            break;
+            case 'alerta':
+                echo '<div class="alerta">'. $msg .'</div>';
+            break;
+            case 'pergunta':
+                echo '<div class="pergunta">'. $msg .'</div>';
+            break;
+            case 'sucesso':
+                echo '<div class="sucesso">'. $msg .'</div>';
+            break;
+            default:
+                echo '<div class="sucesso">'. $msg .'</div>';
+            break;
+        endswitch;
+    endif;
+
+}//printMSG()
+
+function isAdmin(){
+    verificaLogin();
+    $sessao = new sessao();
+    $user = new usuarios(array('administrador' => NULL,));
+    $iduser = $sessao->getVar('iduser');
+    $user->extras_select = "WHERE id=$iduser";
+    $user->selecionaCampos($user);
+    $res = $user->retornaDados();
+    if(strtolower($res->administrador)=='s'):
+        return TRUE;
+    else:
+        return FALSE;
+    endif;
+}//isAdmin()
+
 ?>

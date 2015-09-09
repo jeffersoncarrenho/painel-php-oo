@@ -46,6 +46,20 @@ protegeArquivo(basename(__FILE__));
             $sessao->destroy(TRUE);
             redireciona('?erro=1');
         }//doLogout()
-    
+        
+        public function existeRegistro($campo=null,$valor=null){
+            if($campo!=null && $valor!=null):
+                is_numeric($valor)? $valor = $valor: $valor ="'".$valor ."'";
+                $this->extras_select = " WHERE $campo=$valor";
+                $this->selecionaTudo($this);
+                if($this->linhasafetadas>0):
+                    return TRUE;
+                else:
+                    return FALSE;
+                endif;
+            else:
+                $this->trataerro(__FILE__,__FUNCTION__,NULL, 'Faltam parâmetros para executar a função', true);
+            endif;
+        }//existeRegistro()
     }//fim classe usuarios
 ?>
