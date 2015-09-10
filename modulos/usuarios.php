@@ -207,19 +207,107 @@ case 'listar':
                         printf('<td>%s</td>', $res->login);
                         printf('<td class="center">%s/%s</td>', strtoupper($res->ativo),strtoupper($res->administrador));
                         printf('<td class="center">%s</td>', date("d/m/Y", strtotime($res->datacad)));
-                        printf('<td class="center"><a href="?m=usuarios&t=incluir" title="Novo Cadastro"><img src="images/add.png" alt="Novo Cadastro" /></a> <a href="?m=usuarios&t=editar?id=%s"><img src="images/edit.png" alt="Editar" /></a> <a href="?m=usuarios&t=senha?id=%s"><img src="images/pass.png" alt="Mudar Senha" /></a> <a href="?m=usuarios&t=excluir?id=%s"><img src="images/delete.png" alt="Excluir" /></a> </td>',$res->id,$res->id,$res->id);
+                        printf('<td class="center"><a href="?m=usuarios&t=incluir" title="Novo Cadastro"><img src="images/add.png" alt="Novo Cadastro" /></a> <a href="?m=usuarios&t=editar&id=%s"><img src="images/edit.png" alt="Editar" /></a> <a href="?m=usuarios&t=senha&id=%s"><img src="images/pass.png" alt="Mudar Senha" /></a> <a href="?m=usuarios&t=excluir&id=%s"><img src="images/delete.png" alt="Excluir" /></a> </td>',$res->id,$res->id,$res->id);
                     echo '</tr>';
                 endwhile;
             ?>
         </tbody>
     </table>
-    
-    
-    
     <?php
-
 break;
 
+case 'editar':
+    echo '<h2>Edição de Usuários</h2>';
+    $sessao = new sessao();
+    if(isAdmin()==true || $sessao->getVar('iduser')==$_GET['id']):
+        if(isset($_GET['id'])):
+            $id = $_GET['id'];
+            if(isset($_POST['editar'])):
+                $user = new usuarios(array( 'nome' => $_POST['nome'],
+                                            'email' => $_POST['email'],
+                                            'ativo' => ($_POST['ativo']=='on') ? 's' : 'n',
+                                            'administrador' => ($_POST['adm']=='on') ? 's' : 'n',
+                                          ));
+                $user->valor_pk = $id;
+                $user->extras_select = " WHERE id=$id";
+                $user->selecionaTudo($user);
+                $res = $user->retornaDados();
+                $duplicado = FALSE;
+                if($res->email != $_POST['email']):
+                    if($user->existeRegistro('email', $_POST['email'])):
+                        printMSG('Este email já existe no sistema, escolha outro endereço!', 'erro');
+                        $duplicado = true;
+                    endif;
+                endif;
+                if($duplicado != true):
+                    $user->atualizar($user);
+                    if($user->linhasafetadas==1):
+                        printMSG('Dados alterados com sucesso. <a href="?m=usuarios&t=listar">Exibir Cadastros</a>', 'sucesso');
+                        unset($_POST);
+                    else:
+                        printMSG('Nenhum dado foi alterado. <a href="?m=usuarios&t=listar">Exibir Cadastros</a>', 'alerta');
+                    endif;
+                endif;
+            endif;
+            //faz a edição do user
+            $userbd = new usuarios();
+            $userbd->extras_select = " WHERE id=$id";
+            $userbd->selecionaTudo($userbd);
+            $resbd = $userbd->retornaDados();
+        else:
+            printMSG('Usuário não definido, <a href="?m=usuarios&t=listar">Escolha um usuário para alterar.</a>', 'erro');
+        endif;
+
+    ?>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $(".userform").validate({
+                    rules:{
+                        nome:{required:true, minlength:3},
+                        email:{required:true, email:true},
+                    }
+                });
+            });
+        </script>                  
+        <form action="" method="post" class="userform">
+            <fieldset>
+                <legend>Informe os dados para alteração</legend>
+                <ul>
+                    <li>
+                        <label for="nome">Nome</label>
+                        <input type="text" name="nome" size="50" value="<?php if(isset($resbd)) echo $resbd->nome;?>" />
+                    </li>
+                    <li>
+                        <label for="email">Email</label>
+                        <input type="text" name="email" size="50" value="<?php if(isset($resbd)) echo $resbd->email;?>" />
+                    </li>
+                    <li>
+                        <label for="login">Login</label>
+                        <input type="text" name="login" size="35" disabled value="<?php if(isset($resbd)) echo $resbd->login;?>" />
+                    </li>
+                    <li>
+                        <label for="ativo">Ativo</label>
+                        <input type="checkbox" name="ativo" <?php if(!isAdmin()) echo 'disabled'; if($resbd->ativo == 's') echo 'checked'; ?> /> Habilitar ou desabilitar usuário
+                    </li>
+                    <li>
+                        <label for="adm">Administrador</label>
+                        <input type="checkbox" name="adm" <?php if(!isAdmin()) echo 'disabled'; if($resbd->administrador == 's') echo 'checked'; ?> /> Dar controle total ao usuário
+                    </li>
+                    <li class="center">
+                        <input type="button" onClick="location.href='?m=usuarios&t=listar'" value="Cancelar" />
+                        <input type="submit" name="editar" value="Salvar Alterações" />
+                    </li>
+                </ul>
+            </fieldset>
+        </form>
+    <?php
+
+
+    else:
+        //Avisa que não tem permissão para alterar o user
+        printMSG('Você não tem permissão para acessar esta página <a href="#" onClick="history.back()">Voltar</a>', 'erro');
+    endif;
+break;
 default:
     echo '<p>A tela solicitada não existe.</p>';
 break;
