@@ -7,13 +7,13 @@ loadJS('jquery-validate-messages');
 switch($tela):
 case 'login':
     $sessao = new sessao();
-    if($sessao->getNvars()>0 || $sessao->getVar('logado')==TRUE || $sessao->getVar('ip')==$_SERVER['REMOTE_ADDR']) redireciona('painel.php');
+    if($sessao->getNvars()>0 && $sessao->getVar('logado')==TRUE && $sessao->getVar('ip')==$_SERVER['REMOTE_ADDR']) redireciona('painel.php');
 
 
     if(isset($_POST['logar'])):
         $user = new usuarios();
-        $user->setValor('login', $_POST['usuario']);
-        $user->setValor('senha', $_POST['senha']);
+        $user->setValor('login', antiInject($_POST['usuario']));
+        $user->setValor('senha', antiInject($_POST['senha']));
         if($user->doLogin($user)):
             redireciona('painel.php');
         else:
@@ -43,7 +43,7 @@ case 'login':
                     <ul>
                         <li>
                             <label for="usuario">Usuário</label>
-                            <input type="text" size="35" name="usuario" value="<?php if(isset($_POST['usuario'])) echo $_POST['usuario'];?>">
+                            <input type="text" size="35" name="usuario" autofocus value="<?php if(isset($_POST['usuario'])) echo $_POST['usuario'];?>">
                         </li>
                         <li>
                             <label for="senha">Senha</label>
@@ -124,7 +124,7 @@ case 'incluir':
                 <ul>
                     <li>
                         <label for="nome">Nome</label>
-                        <input type="text" name="nome" size="50" value="<?php if(isset($_POST['nome'])) echo $_POST['nome'];?>" />
+                        <input type="text" name="nome" size="50" autofocus value="<?php if(isset($_POST['nome'])) echo $_POST['nome'];?>" />
                     </li>
                     <li>
                         <label for="email">Email</label>
@@ -223,11 +223,17 @@ case 'editar':
         if(isset($_GET['id'])):
             $id = $_GET['id'];
             if(isset($_POST['editar'])):
-                $user = new usuarios(array( 'nome' => $_POST['nome'],
-                                            'email' => $_POST['email'],
-                                            'ativo' => ($_POST['ativo']=='on') ? 's' : 'n',
-                                            'administrador' => ($_POST['adm']=='on') ? 's' : 'n',
-                                          ));
+                if(isAdmin==true):
+                    $user = new usuarios(array( 'nome' => $_POST['nome'],
+                                                'email' => $_POST['email'],
+                                                'ativo' => ($_POST['ativo']=='on') ? 's' : 'n',
+                                                'administrador' => ($_POST['adm']=='on') ? 's' : 'n',
+                                              ));
+                else:
+                    $user = new usuarios(array( 'nome' => $_POST['nome'],
+                                                'email' => $_POST['email'],
+                                                ));
+                endif;
                 $user->valor_pk = $id;
                 $user->extras_select = " WHERE id=$id";
                 $user->selecionaTudo($user);
@@ -275,7 +281,7 @@ case 'editar':
                 <ul>
                     <li>
                         <label for="nome">Nome</label>
-                        <input type="text" name="nome" size="50" value="<?php if(isset($resbd)) echo $resbd->nome;?>" />
+                        <input type="text" name="nome" autofocus size="50" value="<?php if(isset($resbd)) echo $resbd->nome;?>" />
                     </li>
                     <li>
                         <label for="email">Email</label>
@@ -363,7 +369,7 @@ case 'senha':
                     </li>
                     <li>
                         <label for="senha">Senha</label>
-                        <input type="password" name="senha" size="25" id="senha" value="<?php if(isset($_POST['senha'])) echo $_POST['senha'];?>" />
+                        <input type="password" name="senha" autofocus size="25" id="senha" value="<?php if(isset($_POST['senha'])) echo $_POST['senha'];?>" />
                     </li>
                     <li>
                         <label for="senhaconf">Repita a Senha</label>
