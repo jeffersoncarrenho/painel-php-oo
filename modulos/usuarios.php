@@ -308,6 +308,148 @@ case 'editar':
         printMSG('Você não tem permissão para acessar esta página <a href="#" onClick="history.back()">Voltar</a>', 'erro');
     endif;
 break;
+case 'senha':
+    echo '<h2>Alteração de Senha</h2>';
+    $sessao = new sessao();
+    if(isAdmin()==true || $sessao->getVar('iduser')==$_GET['id']):
+        if(isset($_GET['id'])):
+            $id = $_GET['id'];
+            if(isset($_POST['mudasenha'])):
+                $user = new usuarios(array( 'senha' => codificaSenha($_POST['senha'])));
+                $user->valor_pk = $id;
+                $user->atualizar($user);
+                if($user->linhasafetadas==1):
+                    printMSG('Senha alterada com sucesso. <a href="?m=usuarios&t=listar">Exibir Cadastros</a>', 'sucesso');
+                    unset($_POST);
+                else:
+                    printMSG('Nenhum dado foi alterado. <a href="?m=usuarios&t=listar">Exibir Cadastros</a>', 'alerta');
+                endif;
+            endif;
+            //faz a edição do user
+            $userbd = new usuarios();
+            $userbd->extras_select = " WHERE id=$id";
+            $userbd->selecionaTudo($userbd);
+            $resbd = $userbd->retornaDados();
+        else:
+            printMSG('Usuário não definido, <a href="?m=usuarios&t=listar">Escolha um usuário para alterar.</a>', 'erro');
+        endif;
+
+    ?>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $(".userform").validate({
+                    rules:{
+                        senha:{required:true, rangelength:[4,10]},
+                        senhaconf:{required:true, equalTo:'#senha'},
+                    }
+                });
+            });
+        </script>                  
+        <form action="" method="post" class="userform">
+            <fieldset>
+                <legend>Informe os dados para alteração</legend>
+                <ul>
+                    <li>
+                        <label for="nome">Nome</label>
+                        <input type="text" name="nome" disabled size="50" value="<?php if(isset($resbd)) echo $resbd->nome;?>" />
+                    </li>
+                    <li>
+                        <label for="email">Email</label>
+                        <input type="text" name="email" disabled size="50" value="<?php if(isset($resbd)) echo $resbd->email;?>" />
+                    </li>
+                    <li>
+                        <label for="login">Login</label>
+                        <input type="text" name="login" size="35" disabled value="<?php if(isset($resbd)) echo $resbd->login;?>" />
+                    </li>
+                    <li>
+                        <label for="senha">Senha</label>
+                        <input type="password" name="senha" size="25" id="senha" value="<?php if(isset($_POST['senha'])) echo $_POST['senha'];?>" />
+                    </li>
+                    <li>
+                        <label for="senhaconf">Repita a Senha</label>
+                        <input type="password" name="senhaconf" size="25" value="<?php if(isset($_POST['senhaconf'])) echo $_POST['senhaconf'];?>" />
+                    </li>
+                    
+                    <li class="center">
+                        <input type="button" onClick="location.href='?m=usuarios&t=listar'" value="Cancelar" />
+                        <input type="submit" name="mudasenha" value="Salvar Alterações" />
+                    </li>
+                </ul>
+            </fieldset>
+        </form>
+    <?php
+    else:
+        //Avisa que não tem permissão para alterar o user
+        printMSG('Você não tem permissão para acessar esta página <a href="#" onClick="history.back()">Voltar</a>', 'erro');
+    endif;
+break;
+case 'excluir':
+    echo '<h2>Exclusão de Usuários</h2>';
+    $sessao = new sessao();
+    if(isAdmin()==true):
+        if(isset($_GET['id'])):
+            $id = $_GET['id'];
+            if(isset($_POST['excluir'])):
+                $user = new usuarios();
+                $user->valor_pk = $id;
+                $user->deletar($user);
+                if($user->linhasafetadas==1):
+                    printMSG('Registro exluído com sucesso. <a href="?m=usuarios&t=listar">Exibir Cadastros</a>', 'sucesso');
+                    unset($_POST);
+                else:
+                    printMSG('Nenhum registro foi excuído. <a href="?m=usuarios&t=listar">Exibir Cadastros</a>', 'alerta');
+                endif;                
+            endif;
+            //faz a edição do user
+            $userbd = new usuarios();
+            $userbd->extras_select = " WHERE id=$id";
+            $userbd->selecionaTudo($userbd);
+            $resbd = $userbd->retornaDados();
+        else:
+            printMSG('Usuário não definido, <a href="?m=usuarios&t=listar">Escolha um usuário para excluir.</a>', 'erro');
+        endif;
+
+    ?>
+        <form action="" method="post" class="userform">
+            <fieldset>
+                <legend>Confira os dados para exclusão</legend>
+                <ul>
+                    <li>
+                        <label for="nome">Nome</label>
+                        <input type="text" name="nome" disabled size="50" value="<?php if(isset($resbd)) echo $resbd->nome;?>" />
+                    </li>
+                    <li>
+                        <label for="email">Email</label>
+                        <input type="text" name="email" size="50" disabled value="<?php if(isset($resbd)) echo $resbd->email;?>" />
+                    </li>
+                    <li>
+                        <label for="login">Login</label>
+                        <input type="text" name="login" size="35" disabled value="<?php if(isset($resbd)) echo $resbd->login;?>" />
+                    </li>
+                    <li>
+                        <label for="ativo">Ativo</label>
+                        <input type="checkbox" name="ativo" disabled <?php if($resbd->ativo == 's') echo 'checked'; ?> /> Habilitar ou desabilitar usuário
+                    </li>
+                    <li>
+                        <label for="adm">Administrador</label>
+                        <input type="checkbox" name="adm" disabled <?php if($resbd->administrador == 's') echo 'checked'; ?> /> Dar controle total ao usuário
+                    </li>
+                    <li class="center">
+                        <input type="button" onClick="location.href='?m=usuarios&t=listar'" value="Cancelar" />
+                        <input type="submit" name="excluir" value="Confirmar Exclusão" />
+                    </li>
+                </ul>
+            </fieldset>
+        </form>
+    <?php
+
+
+    else:
+        //Avisa que não tem permissão para alterar o user
+        printMSG('Você não tem permissão para acessar esta página <a href="#" onClick="history.back()">Voltar</a>', 'erro');
+    endif;
+break;
+
 default:
     echo '<p>A tela solicitada não existe.</p>';
 break;
